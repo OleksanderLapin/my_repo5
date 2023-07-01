@@ -56,8 +56,8 @@ class Record(Field):
 
 def input_error(func):
     def inner(*args):
-        try:  # Якщо виключення не сталося, то продовжуємо роботу 
-            return func(*args)  # Викликаємо саму функцію handler  
+        try: 
+            return func(*args)  
         except KeyError:
             print('Enter user name.')
         except ValueError:
@@ -105,14 +105,17 @@ def del_phone(name_and_phone):
                 record.delete_phone(phone)
                 print(f'Phone {phone} was deleted from {key} contact!')
 
-
-@input_error    # Handler-для change... (дoдaвaнnя aбo oпdate)    
-def phone_number(name): 
-    if name in phone_book.keys():
-        print(f'The phone number of {name} is {phone_book[name].phones}')
-    else:
-        print(f'User name {name} is not in phonebook')
-
+@input_error  
+def add_name(name): 
+    record = phone_book.data.get(name)
+    print(phone_book.data.get(name))
+    if record is None:
+        n = Name(name)
+        p = Phone([])
+        record = Record(n, p)
+        phone_book.add_record(record)
+        print(f'A new contact name: {name}, has been added.')
+        
 @input_error
 def main():
     commands = ['add', 'change', 'phones', 'hello', 'show all', 'good bye', 'close', 'exit', 'delete']
@@ -133,6 +136,8 @@ def main():
             print('Enter arguments to command')
         elif d == 'add':
             add_contact(b.split(' ', maxsplit = 1)[1])
+        elif d == 'add_contact':
+            add_name(b.split(' ', maxsplit = 1)[1])
         elif d == 'change':
             change_contact(b.split(' ', maxsplit = 1)[1])
         elif d == 'phones':
